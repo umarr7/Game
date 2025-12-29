@@ -515,167 +515,332 @@
             bird.height
           );
         } else {
-          // Draw a spooky bat/creature
-          ctx.fillStyle = "#1a1a1a";
+          // Draw an enhanced spooky bat/creature with better graphics
+          ctx.save();
+          
+          // Body with gradient
+          const bodyGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, bird.width / 2);
+          bodyGradient.addColorStop(0, "#2a1a2a");
+          bodyGradient.addColorStop(0.7, "#1a0a1a");
+          bodyGradient.addColorStop(1, "#0a0a0a");
+          
+          ctx.fillStyle = bodyGradient;
           ctx.beginPath();
-          ctx.ellipse(0, 0, bird.width / 2, bird.height / 2, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, bird.width / 2, bird.height / 2, bird.rotation * 0.3, 0, Math.PI * 2);
           ctx.fill();
           
-          // Wings
+          // Body outline with glow
+          ctx.strokeStyle = "#8b0000";
+          ctx.lineWidth = 2;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = "#8b0000";
+          ctx.stroke();
+          
+          // Enhanced wings with animation
+          const wingFlap = Math.sin(frames * 0.3) * 0.2;
           ctx.fillStyle = "#0a0a0a";
+          ctx.shadowBlur = 5;
+          ctx.shadowColor = "#1a0a1a";
+          
+          // Left wing
           ctx.beginPath();
-          ctx.ellipse(-bird.width / 2 - 5, 0, 8, bird.height / 2, -0.3, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.ellipse(bird.width / 2 + 5, 0, 8, bird.height / 2, 0.3, 0, Math.PI * 2);
+          ctx.ellipse(-bird.width / 2 - 8, 0, 10 + wingFlap * 3, bird.height / 2 + wingFlap * 2, -0.4 + wingFlap, 0, Math.PI * 2);
           ctx.fill();
           
-          // Glowing red eyes
+          // Right wing
+          ctx.beginPath();
+          ctx.ellipse(bird.width / 2 + 8, 0, 10 + wingFlap * 3, bird.height / 2 + wingFlap * 2, 0.4 - wingFlap, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Wing membrane details
+          ctx.strokeStyle = "#1a0a1a";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(-bird.width / 2 - 8, 0);
+          ctx.lineTo(-bird.width / 2 - 15, -bird.height / 3);
+          ctx.lineTo(-bird.width / 2 - 15, bird.height / 3);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(bird.width / 2 + 8, 0);
+          ctx.lineTo(bird.width / 2 + 15, -bird.height / 3);
+          ctx.lineTo(bird.width / 2 + 15, bird.height / 3);
+          ctx.stroke();
+          
+          // Glowing red eyes with pulsing effect
+          const eyePulse = Math.sin(frames * 0.2) * 0.3 + 0.7;
           ctx.fillStyle = "#ff0000";
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 15 * eyePulse;
           ctx.shadowColor = "#ff0000";
-          ctx.beginPath();
-          ctx.arc(-8, -5, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(8, -5, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.shadowBlur = 0;
           
-          // Fangs
+          // Left eye
+          ctx.beginPath();
+          ctx.arc(-8, -5, 5 * eyePulse, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Right eye
+          ctx.beginPath();
+          ctx.arc(8, -5, 5 * eyePulse, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Eye pupils
+          ctx.fillStyle = "#000000";
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.arc(-8, -5, 2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(8, -5, 2, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // Enhanced fangs
           ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = "#cccccc";
+          ctx.lineWidth = 1;
+          
+          // Left fang
           ctx.beginPath();
           ctx.moveTo(-3, 5);
-          ctx.lineTo(-1, 10);
+          ctx.lineTo(-1, 12);
           ctx.lineTo(1, 5);
           ctx.closePath();
           ctx.fill();
+          ctx.stroke();
+          
+          // Right fang
           ctx.beginPath();
           ctx.moveTo(3, 5);
-          ctx.lineTo(1, 10);
+          ctx.lineTo(1, 12);
           ctx.lineTo(-1, 5);
           ctx.closePath();
           ctx.fill();
+          ctx.stroke();
+          
+          // Glow effect around creature
+          ctx.strokeStyle = "#8b0000";
+          ctx.lineWidth = 1;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = "#8b0000";
+          ctx.beginPath();
+          ctx.ellipse(0, 0, bird.width / 2 + 3, bird.height / 2 + 3, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          
+          ctx.restore();
         }
 
         ctx.restore();
       }
 
       function drawPipe(pipe) {
-        // Draw spooky tombstones/spikes
+        // Draw creepy tentacles
+        const time = frames * 0.05;
+        
+        // Top tentacle
+        drawTentacle(pipe.x + pipeWidth / 2, 0, pipe.top, time, true);
+        
+        // Bottom tentacle
+        drawTentacle(pipe.x + pipeWidth / 2, pipe.bottom, canvas.height - pipe.bottom, time, false);
+        
+        // Additional smaller tentacles for horror effect
+        drawTentacle(pipe.x + pipeWidth / 4, 0, pipe.top * 0.8, time + 1, true);
+        drawTentacle(pipe.x + pipeWidth * 3 / 4, 0, pipe.top * 0.8, time + 2, true);
+        drawTentacle(pipe.x + pipeWidth / 4, pipe.bottom, (canvas.height - pipe.bottom) * 0.8, time + 1, false);
+        drawTentacle(pipe.x + pipeWidth * 3 / 4, pipe.bottom, (canvas.height - pipe.bottom) * 0.8, time + 2, false);
+      }
+      
+      function drawTentacle(startX, startY, length, time, isTop) {
+        ctx.save();
+        
+        // Tentacle segments with organic movement
+        const segments = Math.floor(length / 8);
+        const points = [];
+        
+        for (let i = 0; i <= segments; i++) {
+          const progress = i / segments;
+          const y = isTop ? startY + length * progress : startY + length * progress;
+          const wave = Math.sin(time + progress * 3) * (8 - progress * 4);
+          const x = startX + wave;
+          points.push({ x, y });
+        }
+        
+        // Draw tentacle body with gradient
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        
+        for (let i = 1; i < points.length; i++) {
+          const cp1x = points[i - 1].x + (points[i].x - points[i - 1].x) / 3;
+          const cp1y = points[i - 1].y;
+          const cp2x = points[i].x - (points[i].x - points[i - 1].x) / 3;
+          const cp2y = points[i].y;
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, points[i].x, points[i].y);
+        }
+        
+        // Tentacle gradient
         const gradient = ctx.createLinearGradient(
-          pipe.x,
-          0,
-          pipe.x + pipeWidth,
-          0
+          points[0].x, points[0].y,
+          points[points.length - 1].x, points[points.length - 1].y
         );
-        gradient.addColorStop(0, "#2a2a2a");
-        gradient.addColorStop(0.5, "#1a1a1a");
+        gradient.addColorStop(0, "#1a0a1a");
+        gradient.addColorStop(0.5, "#2a0a2a");
         gradient.addColorStop(1, "#0a0a0a");
-
-        // Top spike/tombstone
-        ctx.fillStyle = gradient;
-        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.top);
-        ctx.strokeStyle = "#8b0000";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.top);
         
-        // Top spikes
-        ctx.fillStyle = "#1a1a1a";
-        ctx.beginPath();
-        for (let i = 0; i < 3; i++) {
-          const spikeX = pipe.x + (pipeWidth / 4) * (i + 1);
-          ctx.moveTo(spikeX, pipe.top);
-          ctx.lineTo(spikeX - 5, pipe.top - 15);
-          ctx.lineTo(spikeX + 5, pipe.top - 15);
-          ctx.closePath();
-        }
-        ctx.fill();
-        ctx.strokeStyle = "#8b0000";
-        ctx.stroke();
-
-        // Bottom spike/tombstone
-        ctx.fillStyle = gradient;
-        ctx.fillRect(
-          pipe.x,
-          pipe.bottom,
-          pipeWidth,
-          canvas.height - pipe.bottom
-        );
-        ctx.strokeRect(
-          pipe.x,
-          pipe.bottom,
-          pipeWidth,
-          canvas.height - pipe.bottom
-        );
-        
-        // Bottom spikes
-        ctx.fillStyle = "#1a1a1a";
-        ctx.beginPath();
-        for (let i = 0; i < 3; i++) {
-          const spikeX = pipe.x + (pipeWidth / 4) * (i + 1);
-          ctx.moveTo(spikeX, pipe.bottom);
-          ctx.lineTo(spikeX - 5, pipe.bottom + 15);
-          ctx.lineTo(spikeX + 5, pipe.bottom + 15);
-          ctx.closePath();
-        }
-        ctx.fill();
-        ctx.strokeStyle = "#8b0000";
-        ctx.stroke();
-        
-        // Glowing effect
-        ctx.shadowBlur = 5;
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 12;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.shadowBlur = 15;
         ctx.shadowColor = "#8b0000";
-        ctx.strokeRect(pipe.x, 0, pipeWidth, pipe.top);
-        ctx.strokeRect(pipe.x, pipe.bottom, pipeWidth, canvas.height - pipe.bottom);
-        ctx.shadowBlur = 0;
+        ctx.stroke();
+        
+        // Draw tentacle segments with texture
+        for (let i = 0; i < points.length - 1; i++) {
+          const progress = i / points.length;
+          const radius = 6 - progress * 2;
+          
+          // Suckers on tentacle
+          if (i % 3 === 0) {
+            ctx.fillStyle = "#8b0000";
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = "#ff0000";
+            ctx.beginPath();
+            ctx.arc(points[i].x, points[i].y, radius * 0.8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Sucker highlight
+            ctx.fillStyle = "#ff0000";
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.arc(points[i].x - 1, points[i].y - 1, radius * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          
+          // Main tentacle body
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(points[i].x, points[i].y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        // Tentacle tip with glow
+        const tip = points[points.length - 1];
+        ctx.fillStyle = "#ff0000";
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "#ff0000";
+        ctx.beginPath();
+        ctx.arc(tip.x, tip.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Tip spikes
+        ctx.strokeStyle = "#ff0000";
+        ctx.lineWidth = 2;
+        for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 3) {
+          ctx.beginPath();
+          ctx.moveTo(tip.x, tip.y);
+          ctx.lineTo(
+            tip.x + Math.cos(angle) * 12,
+            tip.y + Math.sin(angle) * 12
+          );
+          ctx.stroke();
+        }
+        
+        ctx.restore();
       }
 
       function drawBackground() {
-        // Dark night sky gradient
+        // Dark night sky with deep purple/black gradient
         const skyGradient = ctx.createLinearGradient(0, 0, 0, 450);
-        skyGradient.addColorStop(0, "#0a0a0a");
-        skyGradient.addColorStop(0.5, "#1a0a1a");
+        skyGradient.addColorStop(0, "#000000");
+        skyGradient.addColorStop(0.3, "#1a0a1a");
+        skyGradient.addColorStop(0.6, "#2a0a2a");
         skyGradient.addColorStop(1, "#0a0a0a");
         ctx.fillStyle = skyGradient;
         ctx.fillRect(0, 0, canvas.width, 450);
 
-        // Dark ground
-        ctx.fillStyle = "#0a0a0a";
+        // Dark ground with texture
+        const groundGradient = ctx.createLinearGradient(0, 450, 0, 600);
+        groundGradient.addColorStop(0, "#0a0a0a");
+        groundGradient.addColorStop(1, "#000000");
+        ctx.fillStyle = groundGradient;
         ctx.fillRect(0, 450, canvas.width, 150);
         
-        // Spooky ground texture
-        ctx.fillStyle = "#1a0a0a";
-        for (let i = 0; i < canvas.width; i += 15) {
-          ctx.fillRect(i, 445, 8, 8);
+        // Creepy ground texture with cracks
+        ctx.strokeStyle = "#1a0a0a";
+        ctx.lineWidth = 1;
+        for (let i = 0; i < canvas.width; i += 20) {
+          ctx.beginPath();
+          ctx.moveTo(i, 450);
+          ctx.lineTo(i + Math.random() * 10 - 5, 460);
+          ctx.stroke();
         }
 
-        // Blood red moon
-        if (frames % 400 < 200) {
-          ctx.fillStyle = "rgba(139, 0, 0, 0.8)";
-          ctx.shadowBlur = 20;
-          ctx.shadowColor = "#8b0000";
+        // Blood red moon with pulsing effect
+        const moonX = 100 + (frames % 400) * 0.5;
+        const moonY = 80;
+        const pulse = Math.sin(frames * 0.05) * 3;
+        
+        // Moon outer glow
+        ctx.fillStyle = "rgba(139, 0, 0, 0.2)";
+        ctx.shadowBlur = 40;
+        ctx.shadowColor = "#8b0000";
+        ctx.beginPath();
+        ctx.arc(moonX, moonY, 40 + pulse, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Moon main body
+        ctx.fillStyle = "rgba(139, 0, 0, 0.9)";
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = "#ff0000";
+        ctx.beginPath();
+        ctx.arc(moonX, moonY, 25 + pulse * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Moon craters for texture
+        ctx.fillStyle = "rgba(100, 0, 0, 0.6)";
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.arc(moonX - 8, moonY - 5, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(moonX + 10, moonY + 8, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Stars in the background
+        ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+        for (let i = 0; i < 20; i++) {
+          const starX = (i * 37 + frames * 0.1) % canvas.width;
+          const starY = (i * 23) % 300;
+          const twinkle = Math.sin(frames * 0.1 + i) * 0.5 + 0.5;
+          ctx.globalAlpha = twinkle * 0.5;
           ctx.beginPath();
-          ctx.arc(100 + (frames % 400) * 0.5, 80, 25, 0, Math.PI * 2);
+          ctx.arc(starX, starY, 1, 0, Math.PI * 2);
           ctx.fill();
-          ctx.shadowBlur = 0;
-          
-          // Moon glow
-          ctx.fillStyle = "rgba(139, 0, 0, 0.3)";
-          ctx.beginPath();
-          ctx.arc(100 + (frames % 400) * 0.5, 80, 35, 0, Math.PI * 2);
-          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        
+        // Enhanced fog with multiple layers
+        for (let layer = 0; layer < 3; layer++) {
+          ctx.fillStyle = `rgba(50, 0, 0, ${0.15 - layer * 0.05})`;
+          for (let i = 0; i < 8; i++) {
+            const fogX = (frames * (0.3 + layer * 0.2) + i * 50) % (canvas.width + 60) - 30;
+            const fogY = 150 + layer * 100 + Math.sin(frames * 0.01 + i + layer) * 40;
+            const fogSize = 40 + Math.sin(frames * 0.02 + i + layer) * 15;
+            ctx.beginPath();
+            ctx.arc(fogX, fogY, fogSize, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
         
-        // Fog particles
-        ctx.fillStyle = "rgba(100, 100, 100, 0.1)";
+        // Floating particles (souls/spirits)
+        ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#ff0000";
         for (let i = 0; i < 5; i++) {
-          const fogX = (frames * 0.5 + i * 80) % (canvas.width + 40) - 20;
-          const fogY = 200 + Math.sin(frames * 0.01 + i) * 50;
+          const particleX = (frames * 0.2 + i * 80) % (canvas.width + 20) - 10;
+          const particleY = 100 + Math.sin(frames * 0.03 + i) * 80;
           ctx.beginPath();
-          ctx.arc(fogX, fogY, 30 + Math.sin(frames * 0.02 + i) * 10, 0, Math.PI * 2);
+          ctx.arc(particleX, particleY, 3, 0, Math.PI * 2);
           ctx.fill();
         }
+        ctx.shadowBlur = 0;
       }
 
       function createPipe() {
