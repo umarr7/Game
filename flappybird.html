@@ -274,15 +274,15 @@
         width: 40,
         height: 40,
         velocity: 0,
-        gravity: 0.5,
-        jump: -9,
+        gravity: 0.4,  // Reduced gravity for easier control
+        jump: -10,  // Stronger jump
         rotation: 0,
       };
 
       const pipes = [];
       const pipeWidth = 52;
-      const pipeGap = 150;
-      const pipeSpeed = 2;
+      const pipeGap = 200;  // Increased gap for easier gameplay
+      const pipeSpeed = 1.5;  // Slower speed
 
       // Sound effects using Web Audio API (default sounds)
       const audioContext = new (window.AudioContext ||
@@ -844,8 +844,8 @@
       }
 
       function createPipe() {
-        const minTop = 100;
-        const maxTop = 300;
+        const minTop = 80;  // More space at top
+        const maxTop = 320;  // More space at bottom
         const top = Math.random() * (maxTop - minTop) + minTop;
 
         pipes.push({
@@ -872,7 +872,7 @@
       }
 
       function updatePipes() {
-        if (frames % 100 === 0) {
+        if (frames % 120 === 0) {  // Obstacles appear less frequently
           createPipe();
         }
 
